@@ -32,8 +32,8 @@ class SchemaVersion {
   static create(data) {
     const stmt = db.prepare(`
       INSERT INTO schema_versions 
-      (application_id, service_id, version, file_path, file_format, is_latest) 
-      VALUES (?, ?, ?, ?, ?, ?)
+      (application_id, service_id, version, file_path, file_format) 
+      VALUES (?, ?, ?, ?, ?)
       RETURNING *
     `);
     return stmt.get(
@@ -41,8 +41,7 @@ class SchemaVersion {
       data.service_id,
       data.version,
       data.file_path,
-      data.file_format,
-      data.is_latest
+      data.file_format
     );
   }
 

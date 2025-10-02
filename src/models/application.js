@@ -13,15 +13,7 @@ class Application {
       ON CONFLICT(name) DO UPDATE SET updated_at = CURRENT_TIMESTAMP
       RETURNING *
     `);
-        const inserted = stmt.get(name);
-
-        // Now fetch everything
-        const stmt2 = db.prepare(`SELECT * FROM applications`);
-        console.log('All applications:', stmt2.all());
-
-        throw new Error('Debugging application creation');
-
-        return inserted;
+        return stmt.get(name);
     }
 
     static findOrCreate(name) {
