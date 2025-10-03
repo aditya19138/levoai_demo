@@ -5,20 +5,15 @@ class SchemaVersion {
     const stmt = db.prepare(`
       SELECT MAX(version) as max_version 
       FROM schema_versions 
-      WHERE application_id = ? AND service_id = ?
+      WHERE application_id = ? AND service_id IS ?
     `);
+    console.log('Getting next version for applicationId:', applicationId, 'serviceId:', serviceId);
+
     const result = stmt.get(applicationId, serviceId);
-    console.log('Max version result:', result);
+    console.log('Current max version result:', result);
     return (result.max_version || 0) + 1;
   }
 
-  static findByChecksum(applicationId, serviceId, checksum) {
-    const stmt = db.prepare(`
-      SELECT * FROM schema_versions 
-      WHERE application_id = ? AND service_id IS ? AND checksum = ?
-    `);
-    return stmt.get(applicationId, serviceId, checksum);
-  }
 
   static markPreviousAsNotLatest(applicationId, serviceId = null) {
     const stmt = db.prepare(`
@@ -48,7 +43,7 @@ class SchemaVersion {
   static getLatest(applicationId, serviceId = null) {
     const stmt = db.prepare(`
       SELECT * FROM schema_versions 
-      WHERE application_id = ? AND service_id IS ? AND is_latest = 1
+      WHERE application_id = ? AND service_id IS ? AND is_latest = true
     `);
     return stmt.get(applicationId, serviceId);
   }

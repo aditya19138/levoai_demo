@@ -5,7 +5,6 @@ class ValidationService {
     static async validateOpenAPISpec(content, format) {
         try {
             let spec;
-            console.log('format:', format);
             // console.log('content:', content);
             // Parse the content based on format
             if (format === 'yaml') {
@@ -21,7 +20,7 @@ class ValidationService {
 
             // Validate using swagger-parser
             await SwaggerParser.validate(spec);
-
+ 
             return {
                 valid: true,
                 spec: spec

@@ -56,9 +56,6 @@ class SchemaService {
 
             // Get next version number
             const nextVersion = SchemaVersion.getNextVersion(app.id, serviceId);
-            console.log('Application ID:', app.id);
-            console.log('Service ID:', serviceId);
-            console.log('Next version:', nextVersion);
 
             // Save file to storage
             const relativePath = storageService.saveSchema(
