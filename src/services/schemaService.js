@@ -38,22 +38,6 @@ class SchemaService {
                 serviceId = service.id;
             }
 
-            // Check if this exact schema already exists
-            // const existingSchema = SchemaVersion.findByChecksum(
-            //     app.id,
-            //     serviceId,
-            //     checksum
-            // );
-
-            // if (existingSchema) {
-            //     return {
-            //         duplicate: true,
-            //         version: existingSchema.version,
-            //         message: 'Identical schema already exists',
-            //         data: existingSchema
-            //     };
-            // }
-
             // Get next version number
             const nextVersion = SchemaVersion.getNextVersion(app.id, serviceId);
 
@@ -124,70 +108,6 @@ class SchemaService {
         };
     }
 
-    getSchemaByVersion(applicationName, serviceName = null, version) {
-        const app = Application.findByName(applicationName);
-        if (!app) {
-            throw new Error(`Application '${applicationName}' not found`);
-        }
-
-        let serviceId = null;
-        if (serviceName) {
-            const service = Service.findByNameAndApp(serviceName, app.id);
-            if (!service) {
-                throw new Error(
-                    `Service '${serviceName}' not found in application '${applicationName}'`
-                );
-            }
-            serviceId = service.id;
-        }
-
-        const schemaVersion = SchemaVersion.getByVersion(app.id, serviceId, version);
-        if (!schemaVersion) {
-            throw new Error(`Version ${version} not found`);
-        }
-
-        const content = storageService.readSchema(schemaVersion.file_path);
-
-        return {
-            application: applicationName,
-            service: serviceName,
-            version: schemaVersion.version,
-            format: schemaVersion.file_format,
-            spec: content,
-            created_at: schemaVersion.created_at
-        };
-    }
-
-    listVersions(applicationName, serviceName = null) {
-        const app = Application.findByName(applicationName);
-        if (!app) {
-            throw new Error(`Application '${applicationName}' not found`);
-        }
-
-        let serviceId = null;
-        if (serviceName) {
-            const service = Service.findByNameAndApp(serviceName, app.id);
-            if (!service) {
-                throw new Error(
-                    `Service '${serviceName}' not found in application '${applicationName}'`
-                );
-            }
-            serviceId = service.id;
-        }
-
-        const versions = SchemaVersion.getAllVersions(app.id, serviceId);
-
-        return {
-            application: applicationName,
-            service: serviceName,
-            versions: versions.map(v => ({
-                version: v.version,
-                format: v.file_format,
-                is_latest: Boolean(v.is_latest),
-                created_at: v.created_at
-            }))
-        };
-    }
 }
 
 module.exports = new SchemaService();

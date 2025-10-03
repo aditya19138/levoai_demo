@@ -20,7 +20,7 @@ class ValidationService {
 
             // Validate using swagger-parser
             await SwaggerParser.validate(spec);
- 
+
             return {
                 valid: true,
                 spec: spec
@@ -35,22 +35,6 @@ class ValidationService {
                     }
                 ]
             };
-        }
-    }
-
-    static detectFormat(content) {
-        // Try to parse as JSON first
-        try {
-            JSON.parse(content);
-            return 'json';
-        } catch (e) {
-            // If JSON parse fails, assume YAML
-            try {
-                yaml.load(content);
-                return 'yaml';
-            } catch (yamlError) {
-                return null;
-            }
         }
     }
 }
